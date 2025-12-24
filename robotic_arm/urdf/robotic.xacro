@@ -1,0 +1,118 @@
+<?xml version="1.0" ?>
+<robot name="robotic" xmlns:xacro="http://www.ros.org/wiki/xacro">
+  <xacro:property name="scale" value="0.001 0.001 0.001"/>
+  <xacro:property name="filepath" value="package://robotic_arm//meshes"/>
+  <material name="silver">
+    <color rgba="0.700 0.700 0.700 1.000"/>
+  </material>
+  
+  <link name="base_link">
+    <inertial>
+      <origin xyz="0.00013823687262010676 -1.2854235536756148e-14 0.04099968589423856" rpy="0 0 0"/>
+      <mass value="3.85463310643452"/>
+      <inertia ixx="0.006744" iyy="0.006727" izz="0.007308" ixy="0.0" iyz="-0.0" ixz="1e-06"/>
+    </inertial>
+    <visual>
+      <geometry>
+        <mesh filename="${filepath}/base_link.stl" scale="${scale}"/>
+      </geometry>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <material name="silver"/>
+    </visual>
+    <collision>
+      <geometry>
+        <mesh filename="${filepath}/base_link.stl" scale="${scale}"/>
+      </geometry>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+    </collision>
+  </link>
+
+  <link name="Link_1_1">
+    <inertial>
+      <origin xyz="-0.01713476021454479 0.045546434254803224 0.1338356372860907" rpy="0 0 0"/>
+      <mass value="2.363220430083907"/>
+      <inertia ixx="0.007482" iyy="0.006693" izz="0.001802" ixy="0.000346" iyz="-0.001441" ixz="0.000542"/>
+    </inertial>
+    <visual>
+      <origin xyz="-0.0 -0.0 -0.029" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="${filepath}/Link_1_1.stl" scale="${scale}"/>
+      </geometry>
+      <material name="silver"/>
+    </visual>
+    <collision>
+      <origin xyz="-0.0 -0.0 -0.029" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="${filepath}/Link_1_1.stl" scale="${scale}"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <link name="link_2_1">
+    <inertial>
+      <origin xyz="-0.04077861572987358 -0.05540686331134664 0.022683394413336166" rpy="0 0 0"/>
+      <mass value="6.122340532641328"/>
+      <inertia ixx="0.007538" iyy="0.014981" izz="0.016597" ixy="-0.003262" iyz="0.000664" ixz="0.001766"/>
+    </inertial>
+    <visual>
+      <origin xyz="0.016725 -0.044458 -0.249" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="${filepath}/link_2_1.stl" scale="${scale}"/>
+      </geometry>
+      <material name="silver"/>
+    </visual>
+    <collision>
+      <origin xyz="0.016725 -0.044458 -0.249" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="${filepath}/link_2_1.stl" scale="${scale}"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <link name="link3_part_1">
+    <inertial>
+      <origin xyz="-0.06040231259134485 -0.04676294052480226 0.0026756754122840287" rpy="0 0 0"/>
+      <mass value="3.5193373539764488"/>
+      <inertia ixx="0.005437" iyy="0.011757" izz="0.009587" ixy="-0.002769" iyz="-0.001325" ixz="-0.003521"/>
+    </inertial>
+    <visual>
+      <origin xyz="0.15096 0.021534 -0.267342" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="${filepath}/link3_part_1.stl" scale="${scale}"/>
+      </geometry>
+      <material name="silver"/>
+    </visual>
+    <collision>
+      <origin xyz="0.15096 0.021534 -0.267342" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="${filepath}/link3_part_1.stl" scale="${scale}"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <joint name="Revolute 1" type="continuous">
+    <origin xyz="0.0 0.0 0.029" rpy="0 0 0"/>
+    <parent link="base_link"/>
+    <child link="Link_1_1"/>
+    <axis xyz="0.0 0.0 1.0"/>
+  </joint>
+
+  <joint name="Revolute 2" type="revolute">
+    <origin xyz="-0.016725 0.044458 0.22" rpy="0 0 0"/>
+    <parent link="Link_1_1"/>
+    <child link="link_2_1"/>
+    <axis xyz="0.352111 -0.935958 -0.0"/>
+    <limit upper="1.134464" lower="-4.014257" effort="100" velocity="100"/>
+  </joint>
+
+  <joint name="Revolute 3" type="revolute">
+    <origin xyz="-0.134235 -0.065992 0.018342" rpy="0 0 0"/>
+    <parent link="link_2_1"/>
+    <child link="link3_part_1"/>
+    <axis xyz="0.352111 -0.935958 -0.0"/>
+    <limit upper="1.48353" lower="0.0" effort="100" velocity="100"/>
+  </joint>
+
+</robot>
+
+
