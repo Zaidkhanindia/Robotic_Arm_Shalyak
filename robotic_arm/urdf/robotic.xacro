@@ -1,7 +1,6 @@
 <?xml version="1.0" ?>
 <robot name="robotic" xmlns:xacro="http://www.ros.org/wiki/xacro">
   <xacro:property name="scale" value="0.001 0.001 0.001"/>
-  <xacro:property name="filepath" value="package://robotic_arm//meshes"/>
   <material name="silver">
     <color rgba="0.700 0.700 0.700 1.000"/>
   </material>
@@ -14,14 +13,14 @@
     </inertial>
     <visual>
       <geometry>
-        <mesh filename="${filepath}/base_link.stl" scale="${scale}"/>
+        <mesh filename="package://robotic_arm/meshes/base_link.stl" scale="${scale}"/>
       </geometry>
       <origin xyz="0 0 0" rpy="0 0 0"/>
       <material name="silver"/>
     </visual>
     <collision>
       <geometry>
-        <mesh filename="${filepath}/base_link.stl" scale="${scale}"/>
+        <mesh filename="package://robotic_arm/meshes/base_link.stl" scale="${scale}"/>
       </geometry>
       <origin xyz="0 0 0" rpy="0 0 0"/>
     </collision>
@@ -36,14 +35,14 @@
     <visual>
       <origin xyz="-0.0 -0.0 -0.029" rpy="0 0 0"/>
       <geometry>
-        <mesh filename="${filepath}/Link_1_1.stl" scale="${scale}"/>
+        <mesh filename="package://robotic_arm/meshes/Link_1_1.stl" scale="${scale}"/>
       </geometry>
       <material name="silver"/>
     </visual>
     <collision>
       <origin xyz="-0.0 -0.0 -0.029" rpy="0 0 0"/>
       <geometry>
-        <mesh filename="${filepath}/Link_1_1.stl" scale="${scale}"/>
+        <mesh filename="package://robotic_arm/meshes/Link_1_1.stl" scale="${scale}"/>
       </geometry>
     </collision>
   </link>
@@ -57,14 +56,14 @@
     <visual>
       <origin xyz="0.016725 -0.044458 -0.249" rpy="0 0 0"/>
       <geometry>
-        <mesh filename="${filepath}/link_2_1.stl" scale="${scale}"/>
+        <mesh filename="package://robotic_arm/meshes/link_2_1.stl" scale="${scale}"/>
       </geometry>
       <material name="silver"/>
     </visual>
     <collision>
       <origin xyz="0.016725 -0.044458 -0.249" rpy="0 0 0"/>
       <geometry>
-        <mesh filename="${filepath}/link_2_1.stl" scale="${scale}"/>
+        <mesh filename="package://robotic_arm/meshes/link_2_1.stl" scale="${scale}"/>
       </geometry>
     </collision>
   </link>
@@ -78,26 +77,26 @@
     <visual>
       <origin xyz="0.15096 0.021534 -0.267342" rpy="0 0 0"/>
       <geometry>
-        <mesh filename="${filepath}/link3_part_1.stl" scale="${scale}"/>
+        <mesh filename="package://robotic_arm/meshes/link3_part_1.stl" scale="${scale}"/>
       </geometry>
       <material name="silver"/>
     </visual>
     <collision>
       <origin xyz="0.15096 0.021534 -0.267342" rpy="0 0 0"/>
       <geometry>
-        <mesh filename="${filepath}/link3_part_1.stl" scale="${scale}"/>
+        <mesh filename="package://robotic_arm/meshes/link3_part_1.stl" scale="${scale}"/>
       </geometry>
     </collision>
   </link>
 
-  <joint name="Revolute 1" type="continuous">
+  <joint name="Revolute_1" type="continuous">
     <origin xyz="0.0 0.0 0.029" rpy="0 0 0"/>
     <parent link="base_link"/>
     <child link="Link_1_1"/>
     <axis xyz="0.0 0.0 1.0"/>
   </joint>
 
-  <joint name="Revolute 2" type="revolute">
+  <joint name="Revolute_2" type="revolute">
     <origin xyz="-0.016725 0.044458 0.22" rpy="0 0 0"/>
     <parent link="Link_1_1"/>
     <child link="link_2_1"/>
@@ -105,7 +104,7 @@
     <limit upper="1.134464" lower="-4.014257" effort="100" velocity="100"/>
   </joint>
 
-  <joint name="Revolute 3" type="revolute">
+  <joint name="Revolute_3" type="revolute">
     <origin xyz="-0.134235 -0.065992 0.018342" rpy="0 0 0"/>
     <parent link="link_2_1"/>
     <child link="link3_part_1"/>
@@ -113,6 +112,39 @@
     <limit upper="1.48353" lower="0.0" effort="100" velocity="100"/>
   </joint>
 
+  <ros2_control name="MockSystem" type="system">
+    <hardware>
+      <plugin>mock_components/GenericSystem</plugin>
+    </hardware>
+
+    <joint name="Revolute_1">
+      <command_interface name="position"/>
+      <state_interface name="position"/>
+      <state_interface name="velocity"/>
+    </joint>
+
+    <joint name="Revolute_2">
+      <command_interface name="position"/>
+      <state_interface name="position"/>
+      <state_interface name="velocity"/>
+    </joint>
+
+    <joint name="Revolute_3">
+      <command_interface name="position"/>
+      <state_interface name="position"/>
+      <state_interface name="velocity"/>
+    </joint>
+  </ros2_control>
+
 </robot>
+
+<!--
+Neutral Position of Robotic Arm
+ros2 topic pub /arm_controller/joint_trajectory trajectory_msgs/msg/JointTrajectory "
+joint_names: ['Revolute_1', 'Revolute_2', 'Revolute_3']
+points:
+- positions: [-0.35, 0.2, 0.5]
+  time_from_start: {sec: 2}
+-->
 
 
