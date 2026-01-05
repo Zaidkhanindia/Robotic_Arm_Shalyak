@@ -14,8 +14,12 @@ arm_controller:
       - Revolute_1
       - Revolute_2
       - Revolute_3
+
     command_interfaces:
       - position
+
     state_interfaces:
       - position
       - velocity
+
+    allow_partial_joints_goal: false

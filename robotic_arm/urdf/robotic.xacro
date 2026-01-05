@@ -4,6 +4,8 @@
   <material name="silver">
     <color rgba="0.700 0.700 0.700 1.000"/>
   </material>
+
+  <link name="world"/>
   
   <link name="base_link">
     <inertial>
@@ -89,11 +91,18 @@
     </collision>
   </link>
 
+  <joint name="world_base_joint" type="fixed">
+    <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
+    <parent link="world"/>
+    <child link="base_link"/>
+  </joint>
+
   <joint name="Revolute_1" type="continuous">
     <origin xyz="0.0 0.0 0.029" rpy="0 0 0"/>
     <parent link="base_link"/>
     <child link="Link_1_1"/>
     <axis xyz="0.0 0.0 1.0"/>
+    <limit effort="50" velocity="5"/>
   </joint>
 
   <joint name="Revolute_2" type="revolute">
@@ -101,7 +110,7 @@
     <parent link="Link_1_1"/>
     <child link="link_2_1"/>
     <axis xyz="0.352111 -0.935958 -0.0"/>
-    <limit upper="1.134464" lower="-4.014257" effort="100" velocity="100"/>
+    <limit upper="1.134464" lower="-4.014257" effort="50" velocity="5"/>
   </joint>
 
   <joint name="Revolute_3" type="revolute">
@@ -109,12 +118,20 @@
     <parent link="link_2_1"/>
     <child link="link3_part_1"/>
     <axis xyz="0.352111 -0.935958 -0.0"/>
-    <limit upper="1.48353" lower="0.0" effort="100" velocity="100"/>
+    <limit upper="1.48353" lower="0.0" effort="50" velocity="5"/>
   </joint>
 
-  <ros2_control name="MockSystem" type="system">
+  <gazebo>
+    <plugin 
+      filename="libgz_ros2_control-system.so" 
+      name="gz_ros2_control::GazeboSimROS2ControlPlugin">
+      <parameters>$(find robotic_arm)/config/controllers.yaml</parameters>
+    </plugin>
+  </gazebo>
+
+  <ros2_control name="GazeboSystem" type="system">
     <hardware>
-      <plugin>mock_components/GenericSystem</plugin>
+      <plugin>gz_ros2_control/GazeboSimSystem</plugin>
     </hardware>
 
     <joint name="Revolute_1">
@@ -135,7 +152,7 @@
       <state_interface name="velocity"/>
     </joint>
   </ros2_control>
-
+  
 </robot>
 
 <!--
@@ -144,7 +161,7 @@ ros2 topic pub /arm_controller/joint_trajectory trajectory_msgs/msg/JointTraject
 joint_names: ['Revolute_1', 'Revolute_2', 'Revolute_3']
 points:
 - positions: [-0.35, 0.2, 0.5]
-  time_from_start: {sec: 2}
+  time_from_start: {sec: 2} "
 -->
 
 
