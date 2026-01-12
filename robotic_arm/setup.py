@@ -30,6 +30,7 @@ setup(
     },
     entry_points={
         'console_scripts': [
+            "jointpublisher = robotic_arm.joint_pub_node:main"
         ],
     },
 )
