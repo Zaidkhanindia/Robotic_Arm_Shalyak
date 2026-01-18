@@ -10,15 +10,12 @@ class TextToCommand:
 
     def get_joints_angle_from_text(self):
         text = self.speech.get_text_from_speech()
+
         if not text:
             return None, None
 
         text = text.lower().strip()
         tokens = text.split()
-
-        if text == 'ready':
-            print('Yes Ready....')
-            return None, None
 
         joint = None
         angle = None
@@ -32,8 +29,6 @@ class TextToCommand:
         return joint, angle
 
     def write_command(self, joint, angle):
-        if joint is None or angle is None:
-            return
 
         with open(CSV_PATH, "w", newline="") as f:
             writer = csv.writer(f)
@@ -46,6 +41,13 @@ cmd = TextToCommand()
 
 while True:
     joint, angle = cmd.get_joints_angle_from_text()
+
+    if joint is None or angle is None:
+        print("Invalid / unclear command, ignoring...")
+        time.sleep(0.3)
+        continue
+
     print("Detected:", joint, angle)
     cmd.write_command(joint, angle)
     time.sleep(0.5)
+

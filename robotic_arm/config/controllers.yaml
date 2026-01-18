@@ -8,12 +8,17 @@ controller_manager:
     arm_controller:
       type: joint_trajectory_controller/JointTrajectoryController
 
+    gripper_controller:
+      type: forward_command_controller/ForwardCommandController
+
+
 arm_controller:
   ros__parameters:
     joints:
       - Revolute_1
       - Revolute_2
       - Revolute_3
+      - Revolute_4
 
     command_interfaces:
       - position
@@ -23,3 +28,10 @@ arm_controller:
       - velocity
 
     allow_partial_joints_goal: false
+
+
+gripper_controller:
+  ros__parameters:
+    joints:
+      - Slider_1
+    interface_name: position

@@ -1,9 +1,7 @@
 <?xml version="1.0" ?>
+<robot name="Assembly" xmlns:xacro="http://www.ros.org/wiki/xacro">
 
-<robot name="robotic" xmlns:xacro="http://www.ros.org/wiki/xacro">
-
-  <xacro:property name="scale" value="0.001 0.001 0.001"/>
-  <xacro:property name="file_dir" value="package://robotic_arm"/>
+  <xacro:property name="file_dir" value="file:///home/zaid-khan/urdf"/>
 
   <material name="silver">
     <color rgba="0.3 0.3 0.3 1.000"/>
@@ -17,8 +15,6 @@
     <color rgba="0.01 0.01 0.01 1.000"/>
   </material>
 
-  <link name="world"/>
-  
   <link name="base_link">
     <inertial>
       <origin xyz="0.00013823687262010676 -1.287275748997914e-14 0.030999685894238568" rpy="0 0 0"/>
@@ -166,12 +162,6 @@
     </collision>
   </link>
 
-  <joint name="world_base_joint" type="fixed">
-    <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0"/>
-    <parent link="world"/>
-    <child link="base_link"/>
-  </joint>
-
   <joint name="Revolute_1" type="continuous">
     <origin xyz="0.0 0.0 0.09" rpy="0 0 0"/>
     <parent link="base_link"/>
@@ -204,86 +194,19 @@
   </joint>
 
   <joint name="Slider_1" type="prismatic">
-    <origin xyz="0.01 0.0 -0.05" rpy="0 0 0"/>
+    <origin xyz="0.07 0.0 -0.05" rpy="0 0 0"/>
     <parent link="end_effector_1"/>
     <child link="gripper_right_1"/>
-    <axis xyz="1.0 0.0 0.0"/>
-    <limit upper="0.07" lower="0.00" effort="500" velocity="5"/>
+    <axis xyz="1.0 -0.0 -0.0"/>
+    <limit upper="-0.01" lower="-0.06" effort="100" velocity="100"/>
   </joint>
 
   <joint name="Slider_2" type="prismatic">
-    <origin xyz="-0.03 0.0 -0.05" rpy="0 0 0"/>
+    <origin xyz="-0.09 0.0 -0.05" rpy="0 0 0"/>
     <parent link="end_effector_1"/>
     <child link="gripper_left_1"/>
     <axis xyz="-1.0 0.0 0.0"/>
-    <limit upper="0.07" lower="0.00" effort="500" velocity="5"/>
-    <mimic joint="Slider_1"/>
+    <limit upper="-0.01" lower="-0.06" effort="100" velocity="100"/>
   </joint>
 
-  <gazebo>
-    <plugin 
-      filename="libgz_ros2_control-system.so" 
-      name="gz_ros2_control::GazeboSimROS2ControlPlugin">
-      <parameters>$(find robotic_arm)/config/controllers.yaml</parameters>
-    </plugin>
-  </gazebo>
-
-  <gazebo reference="gripper_right_1">
-    <mu1>0.05</mu1>
-    <mu2>0.05</mu2>
-  </gazebo>
-
-  <gazebo reference="gripper_left_1">
-    <mu1>0.05</mu1>
-    <mu2>0.05</mu2>
-  </gazebo>
-
-  <ros2_control name="GazeboSystem" type="system">
-    <hardware>
-      <plugin>gz_ros2_control/GazeboSimSystem</plugin>
-    </hardware>
-
-    <joint name="Revolute_1">
-      <command_interface name="position"/>
-      <state_interface name="position"/>
-      <state_interface name="velocity"/>
-    </joint>
-
-    <joint name="Revolute_2">
-      <command_interface name="position"/>
-      <state_interface name="position"/>
-      <state_interface name="velocity"/>
-    </joint>
-
-    <joint name="Revolute_3">
-      <command_interface name="position"/>
-      <state_interface name="position"/>
-      <state_interface name="velocity"/>
-    </joint>
-
-    <joint name="Revolute_4">
-      <command_interface name="position"/>
-      <state_interface name="position"/>
-      <state_interface name="velocity"/>
-    </joint>
-
-    <joint name="Slider_1">
-      <command_interface name="position"/>
-      <state_interface name="position"/>
-      <state_interface name="velocity"/>
-      <state_interface name="effort"/>
-    </joint>
-
-  </ros2_control>
 </robot>
-
-<!--
-Neutral Position of Robotic Arm
-ros2 topic pub -1 /arm_controller/joint_trajectory trajectory_msgs/msg/JointTrajectory "
-joint_names: ['Revolute_1', 'Revolute_2', 'Revolute_3']
-points:
-- positions: [0.0, 0.0, 0.0]
-  time_from_start: {sec: 2}"
--->
-
-
