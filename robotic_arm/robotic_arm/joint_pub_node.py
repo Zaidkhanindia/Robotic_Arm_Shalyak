@@ -29,7 +29,8 @@ class TrajectoryPubNode(Node):
         self.joint_state = {
             'alpha' : 0.0,
             'beta'  : 0.0,
-            'gamma' : 0.0
+            'gamma' : 0.0,
+            'delta' : 0.0
         }
 
         self.create_timer(3, self.read_and_publish)
@@ -55,19 +56,18 @@ class TrajectoryPubNode(Node):
         self.publish_cmd(
             self.joint_state['alpha'],
             self.joint_state['beta'],
-            self.joint_state['gamma']
+            self.joint_state['gamma'],
+            self.joint_state['delta']
         )
 
 
-    def publish_cmd(self, alpha, beta, gamma):
+    def publish_cmd(self, alpha, beta, gamma, delta):
         traj = JointTrajectory()
-        traj.joint_names = ['Revolute_1', 'Revolute_2', 'Revolute_3']
-
-        #alpha, beta, gamma = 1.57, 0.0, 0.0
+        traj.joint_names = ['Revolute_1', 'Revolute_2', 'Revolute_3', 'Revolute_4']
 
         point = JointTrajectoryPoint()
-        point.positions = [alpha, beta, gamma]
-        point.time_from_start = Duration(sec=2)
+        point.positions = [alpha, beta, gamma, delta]
+        point.time_from_start = Duration(sec=3)
 
         traj.points.append(point)
         self.pub.publish(traj)
@@ -76,6 +76,7 @@ class TrajectoryPubNode(Node):
         self.get_logger().info(f'Alpha: {self.joint_state['alpha']:.2f}')
         self.get_logger().info(f'Beta: {self.joint_state['beta']:.2f}')
         self.get_logger().info(f'Gamma: {self.joint_state['gamma']:.2f}')
+        self.get_logger().info(f'Gamma: {self.joint_state['delta']:.2f}')
         self.get_logger().info('-----------------------------------')
 
 

@@ -184,7 +184,7 @@
     <parent link="linkone_1"/>
     <child link="linktwo_1"/>
     <axis xyz="-1.0 0.0 0.0"/>
-    <limit upper="1.07" lower="-0.36" effort="100" velocity="100"/>
+    <limit upper="1.07" lower="-0.39" effort="100" velocity="100"/>
   </joint>
 
   <joint name="Revolute_3" type="revolute">
@@ -208,7 +208,7 @@
     <parent link="end_effector_1"/>
     <child link="gripper_right_1"/>
     <axis xyz="1.0 0.0 0.0"/>
-    <limit upper="0.07" lower="0.00" effort="500" velocity="5"/>
+    <limit upper="0.07" lower="0.00" effort="40" velocity="5"/>
   </joint>
 
   <joint name="Slider_2" type="prismatic">
@@ -216,7 +216,7 @@
     <parent link="end_effector_1"/>
     <child link="gripper_left_1"/>
     <axis xyz="-1.0 0.0 0.0"/>
-    <limit upper="0.07" lower="0.00" effort="500" velocity="5"/>
+    <limit upper="0.07" lower="0.00" effort="40" velocity="5"/>
     <mimic joint="Slider_1"/>
   </joint>
 
@@ -269,7 +269,9 @@
 
     <joint name="Slider_1">
       <command_interface name="position"/>
-      <state_interface name="position"/>
+      <state_interface name="position">
+        <param name="initial_value">0.06</param>
+      </state_interface>
       <state_interface name="velocity"/>
       <state_interface name="effort"/>
     </joint>
@@ -278,12 +280,19 @@
 </robot>
 
 <!--
-Neutral Position of Robotic Arm
+Place
 ros2 topic pub -1 /arm_controller/joint_trajectory trajectory_msgs/msg/JointTrajectory "
-joint_names: ['Revolute_1', 'Revolute_2', 'Revolute_3']
+joint_names: ['Revolute_1', 'Revolute_2', 'Revolute_3', 'Revolute_4']
 points:
-- positions: [0.0, 0.0, 0.0]
-  time_from_start: {sec: 2}"
+- positions: [-1.57, -0.4, 0.4, 1.2]
+  time_from_start: {sec: 3}"
 -->
 
-
+<!--
+Pick
+ros2 topic pub -1 /arm_controller/joint_trajectory trajectory_msgs/msg/JointTrajectory "
+joint_names: ['Revolute_1', 'Revolute_2', 'Revolute_3', 'Revolute_4']
+points:
+- positions: [-1.57, 0.4, 0.6, 0.5]
+  time_from_start: {sec: 3}"
+-->

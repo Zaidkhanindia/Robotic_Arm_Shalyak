@@ -34,6 +34,12 @@ def generate_launch_description():
         "robot_description": robot_description_content
     }
 
+    world_path = PathJoinSubstitution([
+        FindPackageShare("robotic_arm"),
+        "worlds",
+        "empty.sdf"
+    ])
+
     # ------------------------------------------------
     # Gazebo Harmonic
     # ------------------------------------------------
@@ -46,7 +52,7 @@ def generate_launch_description():
             ])
         ),
         launch_arguments=[
-            ('gz_args', [' -r -v 4 empty.sdf --physics-engine gz-physics-bullet-featherstone-plugin'])
+            ('gz_args', [' -r -v 4 ', world_path, ' --physics-engine gz-physics-bullet-featherstone-plugin'])
         ]
     )
 
