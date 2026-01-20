@@ -6,6 +6,7 @@ import math
 import os
 
 from trajectory_msgs.msg import JointTrajectory, JointTrajectoryPoint
+from std_msgs.msg import Float64MultiArray
 from builtin_interfaces.msg import Duration
 from rclpy.qos import QoSProfile, ReliabilityPolicy, DurabilityPolicy
 
@@ -20,10 +21,22 @@ class TrajectoryPubNode(Node):
             durability=DurabilityPolicy.VOLATILE
         )
 
+        gqos = QoSProfile(
+            depth=10,
+            reliability=ReliabilityPolicy.BEST_EFFORT,
+            durability=DurabilityPolicy.VOLATILE
+        )
+
         self.pub = self.create_publisher(
             JointTrajectory,
             '/arm_controller/joint_trajectory',
             qos
+        )
+
+        self.gripper_pub = self.create_publisher(
+            Float64MultiArray,
+            '/gripper_controller/commands',
+            gqos
         )
 
         self.joint_state = {
@@ -44,21 +57,29 @@ class TrajectoryPubNode(Node):
             reader = csv.reader(f)
             row = next(reader, None)
 
-        if row is None or len(row) < 2:
+        if row is None:
             return
         
-        joint, angle = row[0], float(row[1])
-        rad = math.radians(angle)
+        elif row[0] and row[1] is not None:
+            joint = row[0]
+            angle = float(row[1])
+            rad = math.radians(angle)
 
-        if joint in self.joint_state:
-            self.joint_state[joint] = rad
+            if joint in self.joint_state:
+                self.joint_state[joint] = rad
 
-        self.publish_cmd(
-            self.joint_state['alpha'],
-            self.joint_state['beta'],
-            self.joint_state['gamma'],
-            self.joint_state['delta']
-        )
+            self.publish_cmd(
+                self.joint_state['alpha'],
+                self.joint_state['beta'],
+                self.joint_state['gamma'],
+                self.joint_state['delta']
+            )
+
+        elif row[2] is not None:
+            if row[2] == 'open':
+                self.publish_gripper(True)
+            else:
+                self.publish_gripper(False)
 
 
     def publish_cmd(self, alpha, beta, gamma, delta):
@@ -78,6 +99,13 @@ class TrajectoryPubNode(Node):
         self.get_logger().info(f'Gamma: {self.joint_state['gamma']:.2f}')
         self.get_logger().info(f'Gamma: {self.joint_state['delta']:.2f}')
         self.get_logger().info('-----------------------------------')
+
+    def publish_gripper(self, open_grip):
+        msg = Float64MultiArray()
+        msg.data = [0.06] if open_grip else [0.00]
+        gstate = 'Open' if open_grip else 'Close'
+        self.gripper_pub.publish(msg)
+        self.get_logger().info(f'Gripper {gstate}!')
 
 
 

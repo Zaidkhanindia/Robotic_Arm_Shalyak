@@ -37,13 +37,13 @@ class TextToCommand:
 
         return joint, angle, command
 
-    def write_command(self, joint, angle):
+    def write_command(self, joint, angle, command):
 
         with open(CSV_PATH, "w", newline="") as f:
             writer = csv.writer(f)
-            writer.writerow([joint, angle])
+            writer.writerow([joint, angle, command])
 
-        print(f"Written to CSV: {joint}, {angle}")
+        print(f"Written to CSV: {joint}, {angle}, {command}")
 
 
 cmd = TextToCommand()
@@ -56,8 +56,6 @@ while True:
         time.sleep(0.3)
         continue
 
-    print("Detected: ", joint, angle)
-    print("Gripper command: ", command)
-    cmd.write_command(joint, angle)
+    cmd.write_command(joint, angle, command)
     time.sleep(0.4)
 

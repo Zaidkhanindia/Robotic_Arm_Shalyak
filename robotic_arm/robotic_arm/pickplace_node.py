@@ -54,8 +54,8 @@ class TrajectoryPubNode(Node):
         self.gripper_open = False
 
         # Timer (non-blocking)
-        self.create_timer(3, self.control_loop)
-        self.get_logger().info('Closed-loop Pick & Place Node Started')
+        self.create_timer(2.5, self.control_loop)
+        self.get_logger().info('Pick & Place Node Started')
 
     # ---------------- PUBLISHERS ----------------
 
@@ -97,11 +97,9 @@ class TrajectoryPubNode(Node):
             return
 
         elif command == 'pick':
-            self.get_logger().info('Picking Object !')
             self.pick_sequence()
 
         elif command == 'place':
-            self.get_logger().info('Placing Object !')
             self.place_sequence()
 
     # ---------------- PICK ----------------
@@ -133,7 +131,8 @@ class TrajectoryPubNode(Node):
             self.robot_state = 'holding'
             self.motion_step = 0
             self.current_task = 'place'
-            self.get_logger().info('Object picked')
+            self.get_logger().info('Object picked !')
+            self.get_logger().info('---------------')
 
     # ---------------- PLACE ----------------
 
@@ -169,6 +168,7 @@ class TrajectoryPubNode(Node):
             self.motion_step = 0
             self.current_task = 'pick'
             self.get_logger().info('Object placed')
+            self.get_logger().info('---------------')
 
 
 def main():
